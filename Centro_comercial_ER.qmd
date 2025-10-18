@@ -1,0 +1,156 @@
+---
+# Metadatos del documento
+title: "Base de datos para centro comercial"
+author: "Matías Valenzuela Nuche"
+
+# Funcionalidades añadidas
+lang: es
+date: last-modified
+date-format: long
+title-block-banner: true
+editor: visual
+
+format:
+  html:
+    # Tema y diseño de la página
+    theme:
+      light: flatly
+      dark: darkly
+    page-layout: article
+    smooth-scroll: true
+    
+    # Tabla de contenidos (TOC)
+    toc: true
+    toc-location: left
+    toc-title: "Contenido"
+    toc-depth: 3
+    toc-expand: 2
+    
+    # Numeración de secciones
+    number-sections: true
+    number-depth: 3
+    
+    # Opciones de visualización de código
+    code-fold: true
+    code-tools:
+      source: true
+      toggle: false
+    code-line-numbers: true
+    code-link: true
+    highlight-style: atom-one
+    
+    # Ubicación de leyendas para figuras y tablas
+    fig-cap-location: bottom
+    tbl-cap-location: top
+
+    # Opciones de renderizado y enlaces
+    embed-resources: true
+    html-math-method: katex
+    link-external-icon: true
+    link-external-newwindow: true
+    
+    # Hoja de estilos personalizada
+    css: "css/styles.css"
+---
+
+```{mermaid}
+erDiagram
+    %% --- ENTIDADES PRINCIPALES Y SUS ATRIBUTOS ---
+
+    EMPRESA {
+        string rut PK "Identificador único de la empresa"
+        string razon_social
+        string calle "Componente del atributo compuesto 'dominio_fiscal'"
+        string numero "Componente del atributo compuesto 'dominio_fiscal'"
+        string ciudad "Componente del atributo compuesto 'dominio_fiscal'"
+        string codigo_postal "Componente del atributo compuesto 'dominio_fiscal'"
+    }
+
+    EMPLEADO {
+        string run PK "Identificador único del empleado"
+        string nombre
+        string nro_celular
+        string sexo
+    }
+
+    LOCAL {
+        string n_local PK "Número identificador único del local"
+        float costo_alquiler
+        int piso
+        float superficie
+        string[] caracteristicas "Atributo multivaluado"
+    }
+
+    SERVICIO {
+        int n_servicio PK "Número identificador del servicio"
+        string descripcion
+        float costo
+        string unidad_medida "Componente del atributo compuesto 'costo'"
+    }
+
+    %% --- ENTIDADES ASOCIATIVAS (para relaciones N:N o con atributos) ---
+
+    ALQUILER {
+        string empresa_rut PK, FK
+        string local_n_local PK, FK
+        date fecha_inicio PK
+        int meses_acordados
+        date[] fecha_pago "Atributo multivaluado"
+        float costo_fijo_local "Componente del atributo compuesto 'Monto total mensual'"
+        float porcentaje_facturacion "Componente del atributo compuesto 'Monto total mensual'"
+        string[] servicios_que_recibe "Atributo multivaluado y componente de 'Monto total mensual'"
+    }
+
+    LOCAL_SERVICIO {
+        string local_n_local PK, FK
+        int servicio_n_servicio PK, FK
+    }
+
+    %% --- ENTIDADES DE ESPECIALIZACIÓN (JERARQUÍA 'ES UN') ---
+
+    LOCAL_DE_COMIDAS {
+        string n_local_fk FK
+        string[] comidas "Atributo multivaluado"
+    }
+
+    LOCAL_DE_ESPARCIMIENTO {
+        string n_local_fk FK
+        string[] funcionalidades "Atributo multivaluado"
+        string[] tipo_de_local "Atributo multivaluado"
+        int capacidad_personas
+    }
+
+    LOCAL_COMERCIAL {
+        string n_local_fk FK
+    }
+
+    JEFE_DE_LOCAL {
+        string run_empleado_fk FK
+    }
+
+    VENDEDOR {
+        string run_empleado_fk FK
+    }
+
+
+    %% --- DEFINICIÓN DE RELACIONES ---
+
+    EMPRESA ||--|{ ALQUILER : "realiza (1:N)"
+    LOCAL ||--|{ ALQUILER : "es alquilado en (1:N)"
+
+    EMPRESA ||--o{ EMPLEADO : "pertenece a (1:N)"
+
+    EMPLEADO }o--|| LOCAL : "trabaja en (N:1)"
+
+    LOCAL }o--o{ LOCAL_SERVICIO : "recibe (N:M)"
+    SERVICIO }o--o{ LOCAL_SERVICIO : "es provisto por (N:M)"
+
+    %% --- RELACIONES DE ESPECIALIZACIÓN ('ES UN') ---
+
+    LOCAL ||--|| LOCAL_DE_COMIDAS : es_un
+    LOCAL ||--|| LOCAL_DE_ESPARCIMIENTO : es_un
+    LOCAL ||--|| LOCAL_COMERCIAL : es_un
+
+    EMPLEADO ||--|| JEFE_DE_LOCAL : es_un
+    EMPLEADO ||--|| VENDEDOR : es_un
+```
