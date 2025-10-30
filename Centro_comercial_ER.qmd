@@ -11,6 +11,8 @@ title-block-banner: true
 editor: visual
 
 format:
+  gfm:
+    mermaid-format: svg
   html:
     # Tema y diseño de la página
     theme:
@@ -18,6 +20,8 @@ format:
       dark: darkly
     page-layout: article
     smooth-scroll: true
+    filters: [code-fullscreen]
+    lightbox: true
     
     # Tabla de contenidos (TOC)
     toc: true
@@ -54,6 +58,7 @@ format:
 ---
 
 ```{mermaid}
+%%| echo: true
 erDiagram
     %% --- ENTIDADES PRINCIPALES Y SUS ATRIBUTOS ---
 
