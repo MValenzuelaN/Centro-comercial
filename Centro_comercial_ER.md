@@ -55,17 +55,17 @@ graph TD
     spec_empleado --> jefe_local
 
     %% --- Conexiones Relaciones ---
-    Empresa ===|"1"| pertenece
-    pertenece ===|"N"| Empleado
+    Empresa ---|1| pertenece
+    pertenece ---|N| Empleado
 
-    Local ===|"1"| Trabaja
-    Trabaja ===|"N"| Empleado
+    Local ---|1| Trabaja
+    Trabaja ---|N| Empleado
 
-    Local ===|"N"| sirve
-    sirve ===|"M"| servicio
+    Local ---|N| sirve
+    sirve ---|M| servicio
 
-    Local ===|"N"| alquilan
-    alquilan ===|"1"| Empresa
+    Local ---|N| alquilan
+    alquilan ---|1| Empresa
 
     %% --- Atributos Local ---
     Attr_Local_ID(["<u>N° de Local</u>"]) --- Local
@@ -122,7 +122,7 @@ graph TD
 Haz clic en cada sección desplegable para conocer en detalle los metadatos conceptuales extraídos de DIA:
 
 <details>
-<summary><b>🏢 Entidades Fuertes y Débiles</b></summary>
+<summary><b>Entidades Fuertes y Débiles</b></summary>
 
 ### Empresa
 *   **Definición**: Entidad jurídica que arrienda uno o más locales dentro del centro comercial.
@@ -162,7 +162,7 @@ Haz clic en cada sección desplegable para conocer en detalle los metadatos conc
 </details>
 
 <details>
-<summary><b>🔄 Especializaciones y Herencia (Jerarquías)</b></summary>
+<summary><b>Especializaciones y Herencia (Jerarquías)</b></summary>
 
 Ambas especializaciones en el diagrama DIA están definidas bajo la restricción de **Disyunción Total (d)**, lo que implica que una instancia de la superclase pertenece a lo sumo a una de las subclases y obligatoriamente debe estar en alguna de ellas.
 
@@ -185,7 +185,7 @@ Ambas especializaciones en el diagrama DIA están definidas bajo la restricción
 </details>
 
 <details>
-<summary><b>🤝 Relaciones Conceptuales</b></summary>
+<summary><b>Relaciones Conceptuales</b></summary>
 
 ### alquilan
 *   **Participantes**: `Empresa` (1) y `Local` (N).
@@ -342,8 +342,8 @@ erDiagram
     EMPLEADO ||--|| JEFE_DE_LOCAL : "es_un (1:1)"
 
     %% Relación Sirve (N:M a intermedia)
-    LOCAL ||--|{ LOCAL_SERVICE : "recibe"
-    SERVICIO ||--|{ LOCAL_SERVICE : "es_provisto"
+    LOCAL ||--|{ LOCAL_SERVICIO : "recibe"
+    SERVICIO ||--|{ LOCAL_SERVICIO : "es_provisto"
 
     %% Relación Alquiler con Atributos
     EMPRESA ||--|{ ALQUILER : "contrata (1:N)"
@@ -359,7 +359,7 @@ erDiagram
 A continuación se detallan las especificaciones técnicas completas y los esquemas SQL normalizados (cumpliendo estricta 3NF a nivel relacional) para la base de datos física:
 
 <details>
-<summary><b>📐 Tablas Fuertes del Centro Comercial</b></summary>
+<summary><b>Tablas Fuertes del Centro Comercial</b></summary>
 
 ### 1. Tabla `EMPRESA`
 Representa a las personas jurídicas que arriendan locales. Los atributos compuestos de domicilio fiscal se han aplanado.
@@ -401,7 +401,7 @@ CREATE TABLE SERVICIO (
 </details>
 
 <details>
-<summary><b>🛡️ Tablas para Atributos Multivaluados (1NF)</b></summary>
+<summary><b>Tablas para Atributos Multivaluados (1NF)</b></summary>
 
 ### 4. Tabla `CARACTERISTICAS_LOCAL`
 Almacena el atributo multivaluado `Características` de `Local`.
@@ -418,7 +418,7 @@ CREATE TABLE CARACTERISTICAS_LOCAL (
 </details>
 
 <details>
-<summary><b>🌳 Tablas de Especializaciones e Hijas (TPT)</b></summary>
+<summary><b>Tablas de Especializaciones e Hijas (TPT)</b></summary>
 
 Cada subclase posee su propia tabla, con claves primarias que son al mismo tiempo claves foráneas operativas hacia sus respectivas superclases.
 
@@ -485,7 +485,7 @@ CREATE TABLE COMIDAS_LOCAL (
 </details>
 
 <details>
-<summary><b>👤 Personal y Estructura Organizativa</b></summary>
+<summary><b>Personal y Estructura Organizativa</b></summary>
 
 ### 11. Tabla `EMPLEADO`
 Entidad débil conceptualmente, que a nivel físico se implementa con claves foráneas cruzadas para modelar las relaciones `pertenece` y `Trabaja`.
@@ -523,7 +523,7 @@ CREATE TABLE JEFE_DE_LOCAL (
 </details>
 
 <details>
-<summary><b>💼 Tablas Transaccionales de Contratos y Servicios</b></summary>
+<summary><b>Tablas Transaccionales de Contratos y Servicios</b></summary>
 
 ### 14. Tabla Intermedia `LOCAL_SERVICIO` (Relación N:M sirve)
 Mapea la asociación N:M entre locales y servicios provistos.
